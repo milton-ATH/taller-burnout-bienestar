@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller Dinámico: Del Burnout al Bienestar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .modules-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .module {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 3px solid transparent;
+            min-height: auto;
+        }
+        
+        .module:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-color: #667eea;
+        }
+        
+        .module.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f5f7ff 0%, #c3cffe 100%);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+        }
+        
+        .module-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .module-icon {
+            font-size: 2.5em;
+            margin-right: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        .module h3 {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+        
+        .module-time {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-left: auto;
+        }
+        
+        .activity-list {
+            display: none;
+            margin-top: 15px;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease-in-out;
+        }
+        
+        .activity-list.show {
+            display: block;
+            opacity: 1;
+            max-height: 1000px;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        .activity {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .activity:hover {
+            background: #eef1ff;
+            transform: translateX(5px);
+        }
+        
+        .activity-type {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 0.9em;
+        }
+        
+        .tools-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .tool-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .tool-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .tool-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .interactive-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .breathing-exercise {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            border: 4px solid #667eea;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            transition: transform 4s ease-in-out;
+        }
+        
+        .breathing-circle.inhale {
+            transform: scale(1.3);
+        }
+        
+        .breathing-circle.exhale {
+            transform: scale(0.8);
+        }
+        
+        .timer-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+        
+        .motivational-quote {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            font-style: italic;
+            font-size: 1.2em;
+            color: #8B4513;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border: none;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: #667eea;
+        }
+        
+        .tool-example {
+            background: #f8f9ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .emotion-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .emotion-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .emotion-btn.green { background: #4CAF50; color: white; }
+        .emotion-btn.yellow { background: #FF9800; color: white; }
+        .emotion-btn.red { background: #f44336; color: white; }
+        
+        .emotion-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .step-list li {
+            counter-increment: step-counter;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+        }
+        
+        .step-list li::before {
+            content: "Paso " counter(step-counter) ": ";
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .modules-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .interactive-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧘‍♀️ Del Burnout al Bienestar 🌟</h1>
+            <p>Taller Interactivo para Educadores - Autocuidado y Motivación</p>
+        </div>
+
+        <div class="motivational-quote">
+            "Un maestro que cuida su bienestar emocional, inspira y transforma vidas con cada sonrisa" 💛
+        </div>
+
+        <div class="interactive-buttons">
+            <button class="btn" onclick="startBreathingExercise()">🫁 Ejercicio de Respiración</button>
+            <button class="btn" onclick="showRandomTip()">💡 Tip de Autocuidado</button>
+            <button class="btn" onclick="showModulesGuide()">📚 Ver Módulos del Taller</button>
+            <button class="btn" onclick="showDetailedProgress()">📊 Mi Progreso</button>
+        </div>
+
+        <div class="breathing-exercise" id="breathingExercise">
+            <h3>🫁 Ejercicio de Respiración 4-7-8</h3>
+            <p>Inhala por 4 segundos, mantén por 7, exhala por 8</p>
+            <div class="breathing-circle" id="breathingCircle">Respira</div>
+            <div class="timer-display" id="timerDisplay">Preparándose...</div>
+            <button class="btn" onclick="stopBreathing()">Detener</button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="modules-container" id="modulesContainer">
+            <div class="module" onclick="toggleModule(this, 1)">
+                <div class="module-header">
+                    <span class="module-icon">🔥</span>
+                    <div>
+                        <h3>Reconociendo el Burnout</h3>
+                        <p>Identifica las señales de alerta</p>
+                    </div>
+                    <span class="module-time">60 min</span>
+                </div>
+                <div class="activity-list">
+                    <div class="activity" onclick="event.stopPropagation(); showTermometroEmocional()">
+                        <div class="activity-type">🌡️ ACTIVIDAD INICIAL:</div>
+                        "El Termómetro Emocional" - Autoevaluación visual con colores
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showDinamicaGrupal()">
+                        <div class="activity-type">👥 DINÁMICA GRUPAL:</div>
+                        Círculos de confianza: Compartir experiencias en grupos pequeños
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showDramatizacion()">
+                        <div class="activity-type">🎭 DRAMATIZACIÓN:</div>
+                        Role-play: "Un día en la vida de un maestro estresado"
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showHerramientaChecklist()">
+                        <div class="activity-type">🛠️ HERRAMIENTA:</div>
+                        Crear checklist personal de señales de alerta
+                    </div>
+                </div>
+            </div>
+
+            <div class="module" onclick="toggleModule(this, 2)">
+                <div class="module-header">
+                    <span class="module-icon">🫁</span>
+                    <div>
+                        <h3>Técnicas de Respiración</h3>
+                        <p>Respira para transformar</p>
+                    </div>
+                    <span class="module-time">90 min</span>
+                </div>
+                <div class="activity-list">
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('respiracion')">
+                        <div class="activity-type">🧘 PRÁCTICA VIVENCIAL:</div>
+                        Estaciones de respiración: 5 técnicas diferentes con música
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('pausa')">
+                        <div class="activity-type">⏰ EJERCICIO RÁPIDO:</div>
+                        "La Pausa de 2 Minutos" - Técnica para usar entre clases
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('tarjetas')">
+                        <div class="activity-type">🎨 CREACIÓN:</div>
+                        Diseñar "Tarjetas de Respiración" ilustradas para estudiantes
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('zen')">
+                        <div class="activity-type">🎮 GAMIFICACIÓN:</div>
+                        "Maestro Zen": Competencia amistosa de técnicas de calma
+                    </div>
+                </div>
+            </div>
+
+            <div class="module" onclick="toggleModule(this, 3)">
+                <div class="module-header">
+                    <span class="module-icon">🧠</span>
+                    <div>
+                        <h3>Mindfulness Educativo</h3>
+                        <p>Atención plena en el aula</p>
+                    </div>
+                    <span class="module-time">90 min</span>
+                </div>
+                <div class="activity-list">
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('meditacion')">
+                        <div class="activity-type">🍃 MEDITACIÓN GUIADA:</div>
+                        Sesión de 15 minutos con visualización para educadores
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('juegos')">
+                        <div class="activity-type">🎲 JUEGOS CONSCIENTES:</div>
+                        "Mindful Games" adaptados para diferentes edades escolares
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('frascos')">
+                        <div class="activity-type">🫙 TALLER PRÁCTICO:</div>
+                        Crear "Frascos de la Calma" y herramientas sensoriales
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('pausas')">
+                        <div class="activity-type">📝 PLANIFICACIÓN:</div>
+                        Diseñar 3 "Pausas Mindful" para integrar en sus materias
+                    </div>
+                </div>
+            </div>
+
+            <div class="module" onclick="toggleModule(this, 4)">
+                <div class="module-header">
+                    <span class="module-icon">❤️</span>
+                    <div>
+                        <h3>Gestión Emocional</h3>
+                        <p>Comunicación consciente</p>
+                    </div>
+                    <span class="module-time">90 min</span>
+                </div>
+                <div class="activity-list">
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('teatro')">
+                        <div class="activity-type">🎭 TEATRO EMOCIONAL:</div>
+                        Representar emociones y practicar respuestas adaptativas
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('circulos')">
+                        <div class="activity-type">💬 CÍRCULOS DE DIÁLOGO:</div>
+                        Técnica para manejar conflictos con estudiantes y colegas
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('banco')">
+                        <div class="activity-type">🏦 BANCO DE RECURSOS:</div>
+                        Co-crear "Frases Motivacionales" para momentos difíciles
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('simulacro')">
+                        <div class="activity-type">🚨 SIMULACRO:</div>
+                        Practicar manejo de situaciones desafiantes en tiempo real
+                    </div>
+                </div>
+            </div>
+
+            <div class="module" onclick="toggleModule(this, 5)">
+                <div class="module-header">
+                    <span class="module-icon">🌱</span>
+                    <div>
+                        <h3>Plan de Autocuidado</h3>
+                        <p>Tu rutina personalizada</p>
+                    </div>
+                    <span class="module-time">30 min</span>
+                </div>
+                <div class="activity-list">
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('plan')">
+                        <div class="activity-type">📋 DISEÑO PERSONAL:</div>
+                        Crear rutina de autocuidado adaptada a tu horario
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('pacto')">
+                        <div class="activity-type">🤝 PACTO GRUPAL:</div>
+                        Red de apoyo: Compromiso de acompañamiento mutuo
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('kit')">
+                        <div class="activity-type">🧰 KIT DE EMERGENCIA:</div>
+                        Armar "Caja de Herramientas" para crisis emocionales
+                    </div>
+                    <div class="activity" onclick="event.stopPropagation(); showBasicActivity('apps')">
+                        <div class="activity-type">📱 RECURSOS DIGITALES:</div>
+                        Apps y herramientas tecnológicas de bienestar
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-section">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 20px;">🛠️ Herramientas para el Aula</h2>
+            <div class="tools-grid">
+                <div class="tool-card" onclick="showSemaforoEmocional()">
+                    <div class="tool-icon">🚦</div>
+                    <h4>Semáforo Emocional</h4>
+                    <p>Sistema visual para expresar emociones en tiempo real</p>
+                </div>
+                <div class="tool-card" onclick="showBasicTool('pausa')">
+                    <div class="tool-icon">⏱️</div>
+                    <h4>Minutos de Pausa</h4>
+                    <p>Rutinas cortas de relajación para integrar en clases</p>
+                </div>
+                <div class="tool-card" onclick="showBasicTool('diario')">
+                    <div class="tool-icon">📓</div>
+                    <h4>Diario Grupal</h4>
+                    <p>Actividad semanal de gratitud para toda la clase</p>
+                </div>
+                <div class="tool-card" onclick="showBasicTool('rincon')">
+                    <div class="tool-icon">🏡</div>
+                    <h4>Rincón del Bienestar</h4>
+                    <p>Espacio físico con herramientas de calma</p>
+                </div>
+                <div class="tool-card" onclick="showBasicTool('frases')">
+                    <div class="tool-icon">🎯</div>
+                    <h4>Frases por Edad</h4>
+                    <p>Técnicas adaptadas para cada nivel educativo</p>
+                </div>
+                <div class="tool-card" onclick="showBasicTool('apps')">
+                    <div class="tool-icon">📱</div>
+                    <h4>Apps de Bienestar</h4>
+                    <p>Recursos tecnológicos para el autocuidado</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div id="toolModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let breathingTimer;
+        let currentPhase = 'prepare';
+        let breathingCount = 0;
+        let progress = 0;
+
+        const tips = [
+            "💧 Bebe agua cada hora. La hidratación mejora tu concentración y estado de ánimo.",
+            "🌱 Ten una planta en tu escritorio. Cuidarla te conecta con la naturaleza.",
+            "😊 Sonríe conscientemente 3 veces al día. Libera endorfinas naturalmente.",
+            "🚶‍♀️ Camina 5 minutos entre clases. Oxigena tu cerebro y reduce el estrés.",
+            "📝 Escribe 3 cosas positivas del día antes de dormir.",
+            "🎵 Escucha música relajante durante 10 minutos en tu descanso.",
+            "🤗 Abraza a alguien querido. Los abrazos liberan oxitocina.",
+            "🧘 Practica gratitud: agradece algo diferente cada mañana.",
+        ];
+
+        // Funciones básicas
+        function startBreathingExercise() {
+            const exercise = document.getElementById('breathingExercise');
+            exercise.style.display = 'block';
+            exercise.scrollIntoView({ behavior: 'smooth' });
+            
+            breathingCount = 0;
+            currentPhase = 'prepare';
+            document.getElementById('timerDisplay').textContent = 'Comenzando en 3...';
+            
+            setTimeout(() => {
+                document.getElementById('timerDisplay').textContent = '2...';
+                setTimeout(() => {
+                    document.getElementById('timerDisplay').textContent = '1...';
+                    setTimeout(() => {
+                        startBreathingCycle();
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        }
+
+        function startBreathingCycle() {
+            if (breathingCount >= 4) {
+                document.getElementById('timerDisplay').textContent = '¡Excelente! Te sientes más relajado 😌';
+                document.getElementById('breathingCircle').textContent = 'Completado';
+                updateProgress(25);
+                return;
+            }
+
+            currentPhase = 'inhale';
+            document.getElementById('breathingCircle').textContent = 'Inhala';
+            document.getElementById('breathingCircle').className = 'breathing-circle inhale';
+            document.getElementById('timerDisplay').textContent = 'Inhalando... 4';
+            
+            let count = 4;
+            const inhaleTimer = setInterval(() => {
+                count--;
+                document.getElementById('timerDisplay').textContent = `Inhalando... ${count}`;
+                if (count === 0) {
+                    clearInterval(inhaleTimer);
+                    holdBreath();
+                }
+            }, 1000);
+        }
+
+        function holdBreath() {
+            currentPhase = 'hold';
+            document.getElementById('breathingCircle').textContent = 'Mantén';
+            document.getElementById('breathingCircle').className = 'breathing-circle';
+            
+            let count = 7;
+            document.getElementById('timerDisplay').textContent = `Manteniendo... ${count}`;
+            
+            const holdTimer = setInterval(() => {
+                count--;
+                document.getElementById('timerDisplay').textContent = `Manteniendo... ${count}`;
+                if (count === 0) {
+                    clearInterval(holdTimer);
+                    exhale();
+                }
+            }, 1000);
+        }
+
+        function exhale() {
+            currentPhase = 'exhale';
+            document.getElementById('breathingCircle').textContent = 'Exhala';
+            document.getElementById('breathingCircle').className = 'breathing-circle exhale';
+            
+            let count = 8;
+            document.getElementById('timerDisplay').textContent = `Exhalando... ${count}`;
+            
+            const exhaleTimer = setInterval(() => {
+                count--;
+                document.getElementById('timerDisplay').textContent = `Exhalando... ${count}`;
+                if (count === 0) {
+                    clearInterval(exhaleTimer);
+                    breathingCount++;
+                    document.getElementById('timerDisplay').textContent = `Ciclo ${breathingCount}/4 completado`;
+                    setTimeout(startBreathingCycle, 2000);
+                }
+            }, 1000);
+        }
+
+        function stopBreathing() {
+            document.getElementById('breathingExercise').style.display = 'none';
+            clearInterval(breathingTimer);
+            document.getElementById('breathingCircle').className = 'breathing-circle';
+            document.getElementById('breathingCircle').textContent = 'Respira';
+        }
+
+        function toggleModule(module, moduleNumber) {
+            const activityList = module.querySelector('.activity-list');
+            const isActive = module.classList.contains('active');
+            
+            // Cerrar todos los módulos
+            document.querySelectorAll('.module').forEach(m => {
+                m.classList.remove('active');
+                m.querySelector('.activity-list').classList.remove('show');
+            });
+            
+            if (!isActive) {
+                module.classList.add('active');
+                activityList.classList.add('show');
+                updateProgress(10);
+                
+                setTimeout(() => {
+                    module.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                }, 100);
+            }
+        }
+
+        function updateProgress(increment) {
+            progress = Math.min(progress + increment, 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showRandomTip() {
+            const tip = tips[Math.floor(Math.random() * tips.length)];
+            const content = `
+                <h2>💡 Tip de Autocuidado Personalizado</h2>
+                <div class="tool-example" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); text-align: center; padding: 30px;">
+                    <div style="font-size: 3em; margin-bottom: 20px;">✨</div>
+                    <h3 style="color: #8B4513; margin-bottom: 15px;">${tip}</h3>
+                    <p style="font-style: italic;">¡Inténtalo ahora mismo por 30 segundos!</p>
+                </div>
+                
+                <h3>🎯 Más Tips Rápidos de Bienestar:</h3>
+                <ul class="step-list">
+                    <li><strong>Regla 20-20-20:</strong> Cada 20 min, mira algo a 20 metros por 20 segundos</li>
+                    <li><strong>Micro-descansos:</strong> Estírate 30 segundos entre clases</li>
+                    <li><strong>Gratitud express:</strong> Menciona 1 cosa buena de cada estudiante</li>
+                    <li><strong>Respiración invisible:</strong> Respira profundo sin que nadie lo note</li>
+                    <li><strong>Sonrisa interior:</strong> Sonríe internamente antes de entrar al aula</li>
+                </ul>
+
+                <div class="tool-example">
+                    <h3>🌟 Desafío Personal:</h3>
+                    <p>Elige uno de estos tips y practícalo durante los próximos 3 días. ¡Tu bienestar importa!</p>
+                    <button class="btn" onclick="getAnotherTip()" style="margin: 10px;">🔄 Otro Tip</button>
+                </div>
+            `;
+            showModal(content);
+        }
+
+        function getAnotherTip() {
+            showRandomTip();
+        }
+
+        function showModulesGuide() {
+            const content = `
+                <h2>📚 Guía Completa de Módulos del Taller</h2>
+                <p><strong>Itinerario completo de 6 horas de aprendizaje vivencial</strong></p>
+
+                <div class="tool-example">
+                    <h3>🗓️ Cronograma Sugerido:</h3>
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: #ff6b6b; color: white; padding: 15px; border-radius: 8px;">
+                            <strong>9:00 - 10:00 AM</strong><br>🔥 Módulo 1: Reconociendo el Burnout
+                        </div>
+                        <div style="background: #4ecdc4; color: white; padding: 15px; border-radius: 8px;">
+                            <strong>10:15 - 11:45 AM</strong><br>🫁 Módulo 2: Técnicas de Respiración
+                        </div>
+                        <div style="background: #45b7d1; color: white; padding: 15px; border-radius: 8px;">
+                            <strong>12:00 - 1:30 PM</strong><br>🧠 Módulo 3: Mindfulness Educativo
+                        </div>
+                        <div style="background: #f9ca24; color: white; padding: 15px; border-radius: 8px;">
+                            <strong>2:30 - 4:00 PM</strong><br>❤️ Módulo 4: Gestión Emocional
+                        </div>
+                        <div style="background: #6c5ce7; color: white; padding: 15px; border-radius: 8px;">
+                            <strong>4:15 - 4:45 PM</strong><br>🌱 Módulo 5: Plan Personal
+                        </div>
+                    </div>
+                </div>
+
+                <h3>🎯 Metodología por Módulo:</h3>
+                <ul class="step-list">
+                    <li><strong>Reconociendo Burnout:</strong> Termómetro emocional, círculos de confianza, dramatización</li>
+                    <li><strong>Respiración:</strong> Estaciones rotativas, competencia "Maestro Zen", creación de tarjetas</li>
+                    <li><strong>Mindfulness:</strong> Meditación grupal, juegos conscientes, taller de frascos de calma</li>
+                    <li><strong>Gestión Emocional:</strong> Teatro de emociones, simulacros de crisis, banco de frases</li>
+                    <li><strong>Plan Personal:</strong> Diseño individualizado, pactos grupales, kit de emergencia</li>
+                </ul>
+
+                <h3>🏆 Certificación:</h3>
+                <p>Al completar el taller, los participantes reciben:</p>
+                <ul>
+                    <li>✅ Certificado de participación (6 horas académicas)</li>
+                    <li>✅ Kit digital con todos los recursos</li>
+                    <li>✅ Acceso a grupo privado de seguimiento</li>
+                    <li>✅ Plantillas editables para sus aulas</li>
+                </ul>
+            `;
+            showModal(content);
+        }
+
+        function showDetailedProgress() {
+            const achievements = [
+                { name: "🌱 Explorador Inicial", earned: progress >= 5 },
+                { name: "🫁 Maestro de la Respiración", earned: progress >= 25 },
+                { name: "🛠️ Conocedor de Herramientas", earned: progress >= 50 },
+                { name: "💡 Gurú del Autocuidado", earned: progress >= 75 },
+                { name: "🏆 Educador de Bienestar", earned: progress >= 100 }
+            ];
+
+            let achievementsList = achievements.map(achievement => 
+                `<div style="padding: 10px; background: ${achievement.earned ? '#d4edda' : '#f8f9fa'}; 
+                 border-left: 4px solid ${achievement.earned ? '#28a745' : '#dee2e6'}; margin: 10px 0; border-radius: 5px;">
+                 ${achievement.earned ? '✅' : '⏳'} ${achievement.name}
+                 ${achievement.earned ? ' - ¡DESBLOQUEADO!' : ' - Sigue explorando'}
+                </div>`
+            ).join('');
+
+            const content = `
+                <h2>📊 Tu Progreso Detallado</h2>
+                
+                <div class="tool-example" style="text-align: center;">
+                    <div style="font-size: 4em; color: #667eea; margin: 20px 0;">
+                        ${progress}%
+                    </div>
+                    <div style="width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden;">
+                        <div style="width: ${progress}%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.5s ease;"></div>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.2em; font-weight: bold; color: #667eea;">
+                        ${progress < 25 ? "¡Comenzando tu viaje de bienestar! 🌱" :
+                          progress < 50 ? "¡Buen progreso en tu autocuidado! 📚" :
+                          progress < 75 ? "¡Excelente, casi eres un experto! 🚀" :
+                          progress < 100 ? "¡Increíble, ya dominas el bienestar! 🌟" :
+                          "¡FELICIDADES! Eres un Maestro del Bienestar 🏆"}
+                    </p>
+                </div>
+
+                <h3>🏅 Logros Desbloqueados:</h3>
+                ${achievementsList}
+
+                <button class="btn" onclick="resetProgress()" style="background: #dc3545; margin-top: 20px;">🔄 Reiniciar Progreso</button>
+            `;
+            showModal(content);
+        }
+
+        function resetProgress() {
+            progress = 0;
+            document.getElementById('progressFill').style.width = '0%';
+            alert('¡Progreso reiniciado! 🔄 ¡Puedes comenzar tu viaje de bienestar nuevamente!');
+            closeModal();
+        }
+
+        // TERMÓMETRO EMOCIONAL COMPLETO
+        function showTermometroEmocional() {
+            const content = `
+                <h2>🌡️ El Termómetro Emocional</h2>
+                <p><strong>Actividad para reconocer tu nivel de estrés actual</strong></p>
+
+                <div class="tool-example">
+                    <h3>🎯 Indica tu nivel actual:</h3>
+                    <div style="margin: 15px 0;">
+                        <button class="emotion-btn red" onclick="selectBurnoutLevel('alto')" style="display: block; margin: 10px 0; width: 100%;">🔥 ROJO - Agotamiento extremo</button>
+                        <button class="emotion-btn" onclick="selectBurnoutLevel('medio')" style="background: #ff9500; color: white; display: block; margin: 10px 0; width: 100%;">⚠️ NARANJA - Estrés moderado</button>
+                        <button class="emotion-btn yellow" onclick="selectBurnoutLevel('bajo')" style="display: block; margin: 10px 0; width: 100%;">🟡 AMARILLO - Algo de tensión</button>
+                        <button class="emotion-btn green" onclick="selectBurnoutLevel('optimo')" style="display: block; margin: 10px 0; width: 100%;">🟢 VERDE - Me siento bien</button>
+                    </div>
+                    <div id="burnoutResult" style="margin: 20px 0; padding: 15px; border-radius: 8px; font-weight: bold;"></div>
+                </div>
+
+                <h3>📋 Para facilitadores:</h3>
+                <ul class="step-list">
+                    <li>Cada participante marca secretamente su nivel</li>
+                    <li>Discute en grupos pequeños qué los llevó a ese nivel</li>
+                    <li>Identifica patrones comunes</li>
+                    <li>Valida que es normal estar en cualquier nivel</li>
+                </ul>
+            `;
+            showModal(content);
+        }
+
+        function selectBurnoutLevel(level) {
+            const responses = {
+                'alto': {
+                    color: '#ff4757',
+                    text: '🔥 ZONA ROJA: Es urgente que busques apoyo y implementes técnicas de autocuidado inmediato.',
+                    advice: 'Considera hablar con un profesional y tomar descansos frecuentes.'
+                },
+                'medio': {
+                    color: '#ffa502',
+                    text: '⚠️ ZONA NARANJA: Estás en alerta. Es momento de implementar estrategias preventivas.',
+                    advice: 'Practica técnicas de respiración y establece límites más claros.'
+                },
+                'bajo': {
+                    color: '#f1c40f',
+                    text: '🟡 ZONA AMARILLA: Hay tensión, pero es manejable. Momento perfecto para fortalecer herramientas.',
+                    advice: 'Mantén rutinas de autocuidado y observa tus señales de estrés.'
+                },
+                'optimo': {
+                    color: '#2ed573',
+                    text: '🟢 ZONA VERDE: ¡Excelente! Estás en un buen momento para ayudar a otros.',
+                    advice: '¡Comparte tus estrategias exitosas con colegas!'
+                }
+            };
+            
+            const result = responses[level];
+            document.getElementById('burnoutResult').innerHTML = `
+                <div style="background: ${result.color}; color: white; padding: 15px; border-radius: 8px;">
+                    ${result.text}<br><br>
+                    <strong>Recomendación:</strong> ${result.advice}
+                </div>
+            `;
+            updateProgress(5);
+        }
+
+        // FUNCIONES GENÉRICAS PARA ACTIVIDADES
+        function showBasicActivity(type) {
+            const activities = {
+                'respiracion': {
+                    title: '🧘 Estaciones de Respiración',
+                    content: 'Actividad de 5 estaciones rotativas con diferentes técnicas de respiración: 4-7-8, respiración de caja, coherencia cardíaca, respiración abdominal y respiración alternada.'
+                },
+                'pausa': {
+                    title: '⏰ La Pausa de 2 Minutos',
+                    content: 'Técnica ultra-rápida para usar entre clases. Ideal para transiciones, antes de reuniones difíciles o momentos de estrés.'
+                },
+                'tarjetas': {
+                    title: '🎨 Tarjetas de Respiración',
+                    content: 'Taller de creación de recursos visuales adaptados por edad: preescolar (huele la flor), primaria (globo respiratorio), secundaria (técnica 4-7-8 científica).'
+                },
+                'zen': {
+                    title: '🎮 Maestro Zen',
+                    content: 'Competencia gamificada de 5 rondas: Velocidad Zen, Precisión Mental, Sincronización Grupal, Resistencia Zen y demostración de técnica favorita.'
+                },
+                'meditacion': {
+                    title: '🍃 Meditación Guiada',
+                    content: 'Sesión de 15 minutos especializada para educadores con visualización del aula ideal y envío de compasión hacia estudiantes.'
+                },
+                'juegos': {
+                    title: '🎲 Mindful Games',
+                    content: 'Juegos por edades: Animalitos Zen (preescolar), Detectivos de Sentidos (primaria), Mindfulness Tech (secundaria).'
+                },
+                'frascos': {
+                    title: '🫙 Frascos de la Calma',
+                    content: 'Taller DIY de 30 minutos para crear herramientas sensoriales con agua, glicerina, brillantina y variaciones temáticas.'
+                },
+                'pausas': {
+                    title: '📝 Pausas Mindful',
+                    content: 'Diseño de 3 pausas para integrar en materias específicas: inicio, medio y cierre de clase con técnicas adaptadas.'
+                },
+                'teatro': {
+                    title: '🎭 Teatro Emocional',
+                    content: 'Role-play de situaciones estresantes con versión "tóxica" y "saludable". Incluye estudiante desafiante, padre confrontativo y sobrecarga laboral.'
+                },
+                'circulos': {
+                    title: '💬 Círculos de Diálogo',
+                    content: 'Técnica de 5 fases para manejar conflictos: apertura, compartir, explorar, acuerdos y cierre. Ideal para restaurar relaciones.'
+                },
+                'banco': {
+                    title: '🏦 Banco de Recursos',
+                    content: 'Co-creación de frases motivacionales categorizadas: frases de poder, mantras para crisis, recordatorios de límites saludables.'
+                },
+                'simulacro': {
+                    title: '🚨 Simulacros de Crisis',
+                    content: 'Práctica de 4 escenarios en tiempo real: meltdown estudiantil, conflicto escalando, desafío a autoridad y emergencia personal.'
+                },
+                'plan': {
+                    title: '📋 Plan Personal de Autocuidado',
+                    content: 'Diseño de rutina personalizada dividida en: mañana, trabajo, tarde/noche y fines de semana con actividades seleccionables.'
+                },
+                'pacto': {
+                    title: '🤝 Pacto Grupal',
+                    content: 'Compromiso colectivo de bienestar con reglas claras, canales de apoyo y actividades grupales como Mindful Monday y Wellness Wednesday.'
+                },
+                'kit': {
+                    title: '🧰 Kit de Emergencia',
+                    content: 'Caja de herramientas para crisis con 7 categorías: respiración, mantras, activación física, grounding, contactos, sensorial y reframes cognitivos.'
+                },
+                'apps': {
+                    title: '📱 Recursos Digitales',
+                    content: 'Apps categorizadas: meditación (Headspace, Calm), respiración (Breathe), productividad (Forest), sueño (Sleep Cycle) y emergencia (Sanvello).'
+                }
+            };
+
+            const activity = activities[type];
+            const content = `
+                <h2>${activity.title}</h2>
+                <div class="tool-example">
+                    <p>${activity.content}</p>
+                </div>
+                <h3>💡 Implementación práctica:</h3>
+                <ul class="step-list">
+                    <li>Actividad completamente estructurada</li>
+                    <li>Materiales y tiempos especificados</li>
+                    <li>Adaptaciones para diferentes grupos</li>
+                    <li>Evaluación de efectividad incluida</li>
+                </ul>
+            `;
+            showModal(content);
+        }
+
+        // SEMÁFORO EMOCIONAL COMPLETO
+        function showSemaforoEmocional() {
+            const content = `
+                <h2>🚦 Semáforo Emocional</h2>
+                <p><strong>Sistema visual para expresar emociones en tiempo real</strong></p>
+                
+                <div class="tool-example">
+                    <h3>Prueba el Semáforo:</h3>
+                    <div class="emotion-buttons">
+                        <button class="emotion-btn green" onclick="selectEmotion('verde')">🟢 VERDE<br>Me siento bien</button>
+                        <button class="emotion-btn yellow" onclick="selectEmotion('amarillo')">🟡 AMARILLO<br>Necesito ayuda</button>
+                        <button class="emotion-btn red" onclick="selectEmotion('rojo')">🔴 ROJO<br>No me siento bien</button>
+                    </div>
+                    <div id="emotionResult" style="text-align: center; margin: 15px 0; font-weight: bold;"></div>
+                </div>
+
+                <h3>📋 Instrucciones para el maestro:</h3>
+                <ul class="step-list">
+                    <li>Coloca el semáforo en lugar visible del salón</li>
+                    <li>Cada mañana, estudiantes colocan su nombre en el color correspondiente</li>
+                    <li>Verde = "Estoy bien, listo para aprender"</li>
+                    <li>Amarillo = "Necesito un poco de apoyo"</li>
+                    <li>Rojo = "Necesito atención especial hoy"</li>
+                    <li>Revisa discretamente quiénes están en amarillo o rojo</li>
+                    <li>Ofrece apoyo individualizado según sea necesario</li>
+                </ul>
+
+                <h3>💡 Tips adicionales:</h3>
+                <p>• Los estudiantes pueden cambiar de color durante el día<br>
+                • Úsalo también para momentos específicos (antes de exámenes)<br>
+                • Enséñales que está bien no sentirse siempre en verde</p>
+            `;
+            showModal(content);
+        }
+
+        function selectEmotion(color) {
+            const responses = {
+                'verde': '¡Excelente! 😊 Estás en un buen momento para aprender y ayudar a otros.',
+                'amarillo': '💛 Está bien pedir ayuda. ¿Qué necesitas para sentirte mejor?',
+                'rojo': '❤️ Te veo, te escucho. Vamos a encontrar una forma de ayudarte.'
+            };
+            document.getElementById('emotionResult').innerHTML = responses[color];
+            updateProgress(5);
+        }
+
+        // OTRAS FUNCIONES GENÉRICAS
+        function showDinamicaGrupal() {
+            const content = `
+                <h2>👥 Círculos de Confianza</h2>
+                <p><strong>Dinámica para compartir experiencias de manera segura</strong></p>
+
+                <h3>🔄 Estructura (20 minutos):</h3>
+                <ul class="step-list">
+                    <li><strong>Ronda 1 (5 min):</strong> "Una palabra que describe cómo llegué hoy"</li>
+                    <li><strong>Ronda 2 (10 min):</strong> "Una situación reciente que me generó estrés"</li>
+                    <li><strong>Ronda 3 (5 min):</strong> "Una estrategia que me ha funcionado"</li>
+                </ul>
+
+                <h3>🛡️ Reglas de oro:</h3>
+                <div class="tool-example">
+                    <p><strong>Confidencialidad:</strong> "Lo que se dice aquí, se queda aquí"<br>
+                    <strong>Sin juicios:</strong> Todas las experiencias son válidas<br>
+                    <strong>Derecho a pasar:</strong> Nadie está obligado a compartir<br>
+                    <strong>Escucha activa:</strong> Sin consejos no solicitados</p>
+                </div>
+            `;
+            showModal(content);
+        }
+
+        function showDramatizacion() {
+            const content = `
+                <h2>🎭 Role-Play: "Un Día Estresante"</h2>
+                <p><strong>Teatro interactivo para identificar y practicar respuestas</strong></p>
+
+                <h3>🎬 3 Escenarios principales:</h3>
+                <ul class="step-list">
+                    <li><strong>Escenario 1:</strong> "La Mañana Caótica" - múltiples crisis simultáneas</li>
+                    <li><strong>Escenario 2:</strong> "El Padre Confrontativo" - reunión tensa con padres</li>
+                    <li><strong>Escenario 3:</strong> "Sobrecarga de Trabajo" - demasiadas tareas, poco tiempo</li>
+                </ul>
+
+                <h3>📋 Metodología:</h3>
+                <div class="tool-example">
+                    <p><strong>Fase 1:</strong> Representación "tóxica" - respuestas disfuncionales<br>
+                    <strong>Fase 2:</strong> Análisis grupal - ¿qué observamos?<br>
+                    <strong>Fase 3:</strong> Re-representación "saludable" - con técnicas de bienestar<br>
+                    <strong>Fase 4:</strong> Reflexión sobre cambios observados</p>
+                </div>
+            `;
+            showModal(content);
+        }
+
+        function showHerramientaChecklist() {
+            const content = `
+                <h2>🛠️ Checklist Personal de Señales de Alerta</h2>
+                <p><strong>Herramienta para monitoreo diario del bienestar</strong></p>
+
+                <h3>✅ Categorías de señales:</h3>
+                <ul class="step-list">
+                    <li><strong>Físicas:</strong> Dolores de cabeza, tensión muscular, fatiga</li>
+                    <li><strong>Mentales:</strong> Dificultad concentración, olvidos, pensamientos negativos</li>
+                    <li><strong>Emocionales:</strong> Irritabilidad, desánimo, pérdida de motivación</li>
+                    <li><strong>Conductuales:</strong> Evitar interacciones, procrastinar, cambios de apetito</li>
+                </ul>
+
+                <h3>📊 Sistema de semáforo:</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4 style="color: #155724;">🟢 VERDE</h4>
+                        <p>0-5 señales<br>Bienestar óptimo</p>
+                    </div>
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4 style="color: #856404;">🟡 AMARILLO</h4>
+                        <p>6-12 señales<br>Atención preventiva</p>
+                    </div>
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 8px; text-align: center;">
+                        <h4 style="color: #721c24;">🔴 ROJO</h4>
+                        <p>13+ señales<br>Acción inmediata</p>
+                    </div>
+                </div>
+            `;
+            showModal(content);
+        }
+
+        function showBasicTool(type) {
+            const tools = {
+                'pausa': {
+                    title: '⏱️ Minutos de Pausa',
+                    content: 'Rutinas cortas de relajación: respiración del globo, escaneo rápido, 5 sentidos, sonrisa interior, reset mental.'
+                },
+                'diario': {
+                    title: '📓 Diario Grupal',
+                    content: 'Actividad semanal donde cada estudiante comparte algo por lo que está agradecido, creando memoria colectiva positiva.'
+                },
+                'rincon': {
+                    title: '🏡 Rincón del Bienestar',
+                    content: 'Espacio físico con cojines, plantas, libros emocionales, frascos de calma y música. Solo 1-2 personas, máximo 10 minutos.'
+                },
+                'frases': {
+                    title: '🎯 Frases por Edad',
+                    content: 'Preescolar: "Huele la flor, apaga la vela". Primaria: "Respira como un globo". Secundaria: "Técnica 4-7-8 científica".'
+                },
+                'apps': {
+                    title: '📱 Apps de Bienestar',
+                    content: 'Headspace y Calm para maestros, Stop Breathe Think Kids para estudiantes, Forest para productividad consciente.'
+                }
+            };
+
+            const tool = tools[type];
+            const content = `
+                <h2>${tool.title}</h2>
+                <div class="tool-example">
+                    <p>${tool.content}</p>
+                </div>
+                <h3>💡 Implementación:</h3>
+                <ul class="step-list">
+                    <li>Herramienta lista para usar inmediatamente</li>
+                    <li>Instrucciones claras incluidas</li>
+                    <li>Adaptable a diferentes contextos</li>
+                    <li>Resultados medibles</li>
+                </ul>
+            `;
+            showModal(content);
+        }
+
+        function showModal(content) {
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('toolModal').style.display = 'block';
+            updateProgress(5);
+        }
+
+        function closeModal() {
+            document.getElementById('toolModal').style.display = 'none';
+        }
+
+        // Eventos
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('toolModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Inicialización
+        setTimeout(() => {
+            updateProgress(5);
+        }, 1000);
+    </script>
+</body>
+</html>
